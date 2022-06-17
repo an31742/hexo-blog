@@ -7,13 +7,13 @@ title: 偶像崇拜
 subtitle: '偶像崇拜'
 description: 'an31742的个人博客'
 keywords:
-author: John Doe
+author: an31742
 language: zh-CN
 timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: http://example.com
+url: https://an31742.github.io/
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
