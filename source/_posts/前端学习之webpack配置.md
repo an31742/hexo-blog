@@ -1,3 +1,8 @@
+---
+title: 前端学习之webpack配置
+date: 2022-07-07 19:17:20
+tags: webpack
+---
 # webpack学习
 
 1.关于webpack：项目的搭建是通过cli脚手架搭建的，cli脚手架是基于webpack支持模块化，less，typescript，打包优化
