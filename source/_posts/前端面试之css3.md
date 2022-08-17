@@ -16,6 +16,9 @@ tags: 前端面试
 
 #### 边距重叠
 
+* 相邻元素的margin-top和margin-bottom会发生重叠
+* 空内容的p标签也会发生重叠
+
 * 兄弟：上下DOM的20px会重叠
 ```
   >.box {
@@ -67,7 +70,17 @@ tags: 前端面试
   }
 ```
 
+#### margin负值得问题
+
+* margin的top和left设置负值元素向上向左移动
+* margin-right设置负值右侧元素左移，自身不受影响
+* margin-bottom设置负值下侧元素上移，自身不受影响
+
+
 #### BFC：块级格式化上下文  Block Fromatting Context
+
+
+* 一块独立渲染区域，内部元素的渲染不会影响边界以外的元素
 
 * 解决：
 ```
@@ -89,6 +102,9 @@ overflow的值不为visible
 * 推荐使用：overflow：hidden
 
 #### BFC使用场景
+
+
+* 清除浮动
 
 * 修改上面的情况：涉及到规则的1/3/4
 * 左右布局：规则2。FBC区域与外面的浮动元素,不会与浮动元素的边距重叠，。
@@ -117,3 +133,27 @@ overflow的值不为visible
 
 #### 理解
 * 如果说任何有上面情况的margin的DOM，怎么创建BFC？给当前DOM新增个父级，父级设置BFC。设置BFC的话，父级就成为块级格式化上下文。然后父级的DOM的高度计算就是把子DOM的margin全部算在内，外面相互之间也不再会发生影响。
+
+#### 如何理解html语义化
+
+* 让人更容易读懂  （增加代码可读性）
+* 让搜索引擎更容易读懂  （增加seo）
+
+
+#### float布局
+
+* 使用float布局
+* 两侧使用margin负值，以便中间内容横向重叠
+* 防止中间内容被覆盖，一个用padding一个margin
+
+#### absolute和relative依据什么定位
+
+* relative依据自身定位
+* absolute依据最近一层定位元素定位 如果没有任何定位元素依据body定位
+
+#### line-height如何继承的
+
+* 固定值或者比例直接继承，如果是是百分比，先计算再继承 line-height*font-size
+
+#### rem是什么
+* 是相对于根元素的长度单位   html的font-size
