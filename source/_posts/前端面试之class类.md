@@ -93,15 +93,55 @@ s_1.prototype.constructor = s_1;
 ```
 
 * ES6继承
-```
-class Worker extends Person {
-  constructor(name, age, job = '扫地的') {
-    super(name, age);
-    this.job = job;
-  }
-  showJob() {
-    return this.job;
-  }
-}
+```js 
+ class PeoPle(){
+   constructor(name){
+     this.name=name
+   }
+   eat(){
+    console.log(`${this.name}eat something`)
+   }
+ }
+
+ //子类通过extends继承父类的数据
+ class Student extends PeoPle(){
+     constructor(name,number){
+      super(name)
+      this.number=number
+     }
+
+     sayHi(){
+      console.log(`姓名${this.name}学号${this.number}`)
+     }
+ }
+
+//老师子类
+  class teacher extends PeoPle(){
+     constructor(name,number){
+      super(name)
+      this.major=major
+     }
+
+     teach(){
+      console.log(`姓名${this.name}学号${this.major}`)
+     }
+ }
+
+
+
+ const xialuo =new Student('夏洛',1000)
+ console.log(xialuo.name)
+ console.log(xialuo.number)
+ xialuo.eat()
+ xialuo.sayHi()
+
+
+
+
+ const wanglaoshi =new teacher('夏洛',1000)
+ console.log(xialuo.wanglaoshi)
+ console.log(xialuo.wanglaoshi)
+ wanglaoshi.eat()
+ wanglaoshi.teach()
 ```
 
