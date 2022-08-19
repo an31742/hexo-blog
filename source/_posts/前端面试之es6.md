@@ -8,7 +8,7 @@ tags: 前端面试
 
 
 
-## 3，es6有哪些新特性
+### 3，es6有哪些新特性
 
 1. let 和 const
 2. 解构赋值
@@ -106,6 +106,71 @@ let:在代码执行之前的扫描，同样也会对let变量进行“提升”�
 
 pending（执行中）、success（成功）、rejected（失败 、
 
+
+* pending 不会触发任何 then catch 回调
+* 状态变为 resolved 会触发后续的 then 回调
+* 状态变为 rejected 会触发后续的 catch 回调
+
+then和catch
+- then正常返回resloved，里面报错返回rejected
+- catch正常返回resloved，里面报错返回rejected
+- ```js
+      
+       // then正常返回resloved 状态的promise
+      Promise.resolve().then(()=>{
+        return 100
+      })
+      //then里面抛出错误，会返回rejected
+      Promise.resolve().then(()=>{
+        throw new Error('err')
+      })
+      //catch 不抛出错误会返回resolved的promise
+        Promise.reject().catch(()=>{
+       console.error("catch some error")
+      })
+   
+     //catch 抛出错误会返回rejected的promise
+        Promise.reject().catch(()=>{
+       console.error("catch some error")
+       throw new Error('eerr')
+      })
+
+  ```
+```js
+  // 第一题
+Promise.resolve().then(() => {
+    console.log(1)
+}).catch(() => {
+    console.log(2)
+}).then(() => {
+    console.log(3)
+})
+//1 3  resolve会触发then  
+// 第二题
+Promise.resolve().then(() => { // 返回 rejected 状态的 promise
+    console.log(1)     //这里抛出一个错误会触发rejected 所以后面接的catch
+    throw new Error('erro1')
+}).catch(() => {   // 返回 resolved 状态的 promise  
+    console.log(2)
+}).then(() => {   //这里面接的catch所以会返回reselved 状态所以这里面接then
+    console.log(3)
+})
+
+//1 2 3
+// 第三题
+Promise.resolve().then(() => { // 返回 rejected 状态的 promise
+    console.log(1)
+    throw new Error('erro1')
+}).catch(() => { // 抛出一个错误这个后面接是rejected 所以后面接的catch  返回 resolved 状态的 promise
+    console.log(2)
+}).catch(() => {
+    console.log(3)  // 因为上面是catch正常resloved  所以后面应该接then
+})
+
+//1 2
+```
+  
+
 用于解决地狱回调，将异步转化为同步
 
 ```js
@@ -125,25 +190,66 @@ async和await是将异步强行转换为同步处理。
 
 async/await与promise不存在谁代替谁的说法，因为async/await是寄生于Promise，Generater的语法糖。 
 
+async和await 用同步的语法编写异步的代码
+
+try catch 相当于 promise catch
+
+**async封装prmise，返回promise对象**
+**await是处理promise成功的一种情况。相当于then，try catch是处理失败的一种情况**
+
+
+
+
 ```js
-async function demo() {
-let result01 = await sleep(100);
-//上一个await执行之后才会执行下一句
-let result02 = await sleep(result01 + 100);
-let result03 = await sleep(result02 + 100);
-// console.log(result03);
-return result03;
-}
+   async function fn1(){
+      return 100
+   }
+   const rest1=fn1()  //执行async函数返回的是一个promise对象
+   console.log(rest1)  //返回的是一个promise对象
+   rest1.then(data=>{
+    console.log(data)   //100
+   })
+
+  !(async function(){
+     const p1=Promise.resolve(100)
+    const data=await p1  //await 相当于promisethen
+    console.log(data)
+  })()
+
+  
+  
+  !(async function(){
+    const data=await 200  //await 相当于promise.resolve(200)
+    console.log(data)
+
+  })()
+
+  !(async function(){
+    const data=await fn1() //await 后面可以使用函数
+    console.log(data)
+  })()
+
+  //可以通过try catch来捕获一个错误
+   !(async function(){
+   const p4 =Promise.reject("err")
+   try {
+     const res= await p4
+     console.log(res)
+   } catch (error) {
+      console.error(error)
+   }
+  })()
+
 
 ```
 
-#### 3.6async和await有什么区别吗
+#### 3.6async和promise关系吗
 
-1 promise是ES6，async/await是ES7
-2 async/await相对于promise来讲，写法更加优雅
-3 reject状态：
-    1）promise错误可以通过catch来捕捉，建议尾部捕获错误，
-    2）async/await既可以用.then又可以用try-catch捕捉
+* 执行async，返回的是一个promise对象
+* await相当于promise的then
+* try catch可以捕获异常，代替了promise的catch
+
+
 
 #### 3.7箭头函数和普通函数有什么区别
 
@@ -262,7 +368,7 @@ let html = '<li>itheima</li>';
 html = html.repeat(10);
 ```
 
-#### 3.10数组的扩展
+### 3.10数组的扩展
 
 1，扩展运算符：...也可以看做是 **...** 可以把数组中的每一项展开
 
@@ -300,7 +406,7 @@ console.log(arr); // ['a', 'b', 'c']
 // 上例中，如果length为2，则得到的数组为 ['a', 'b']
 ```
 
-3,Set 的成员
+### 3.11Set 的成员
 
 - `size`：属性，获取 `set` 中成员的个数，相当于数组中的 `length`
 - `add(value)`：添加某个值，返回 Set 结构本身。
@@ -323,4 +429,140 @@ for (let i of s) {
   console.log(i);
 }
 // 2 3 5 4
+```
+
+### 3.12 类的声明
+```
+function FN(argument) {
+}
+FN.prototype.hi = function(argument) {
+  console.log(hi);
+};
+
+【es6】
+class FN_1{
+  constructor(){
+    this.name = "name";
+  }
+  hi(){  //函数之间没有逗号
+    console.log(1);
+  }
+}
+```
+
+#### 类的实例
+```
+new FN_1();
+```
+
+### 类的继承
+
+```
+【1.call继承】
+缺点：构造函数上的属性就挂载过来了。但是原型上的函数是没有挂载过来。
+function P(argument) {
+  this.name = "p";
+}
+P.prototype.p_fn = function() {
+  console.log("p_fn");
+};
+
+function s_1 () {
+  // 构造函数上的属性就挂载过来了。但是原型上的函数是没有挂载过来。
+  P.call(this);
+}
+s_1.prototype.s_fn = function(argument){
+  console.log("s_fn");
+};
+--------------------------------------
+【2.实例作为原型对象的继承】
+缺点：就是被继承的类的属性有对象的时候，比如下面的arr,被继承的时候，是把属性的对象地址继承过去。实例化的时候，实例们都是引用的同一个地址。所以修改一个实例的该属性值，其他实例也会变化。
+function P(argument) {
+  this.name = "p";
+  this.arr = [1,2,3];
+}
+P.prototype.p_fn = function() {
+  console.log("p_fn");
+};
+
+function S () {
+}
+S.prototype= new P();
+
+var sl_1 = new S();
+var sl_2 = new S();
+sl_1.arr.push("a");
+console.log(sl_2.arr);  //[1,2,3,"a"]
+--------------------------------------
+【3.call+prototype】解决上面问题1+2
+function P(argument) {
+  this.name = "p";
+}
+P.prototype.p_fn = function() {
+  console.log("p_fn");
+};
+
+function s_1 () {
+  P.call(this);
+}
+s_1.prototype= P.prototype;
+s_1.prototype.constructor = s_1;
+
+这样写的缺点：因为父子的原型对象引用是同一个地址，修改s_1.prototype.constructor上的属性，那么父级上的这个属性也就被修改了。就没法区别被继承类的实例对象的构造函数是谁了。
+
+
+【4.call+Object.create(prototype)】解决上面问题3
+解决：挂这个中间层，在中间层新的对象上重新开constructor的属性。这样就完美解决。
+s_1.prototype= Object.creat(P.prototype);
+s_1.prototype.constructor = s_1;
+```
+
+* ES6继承
+```js 
+ class PeoPle(){
+   constructor(name){
+     this.name=name
+   }
+   eat(){
+    console.log(`${this.name}eat something`)
+   }
+ }
+
+ //子类通过extends继承父类的数据
+ class Student extends PeoPle(){
+     constructor(name,number){
+      super(name)
+      this.number=number
+     }
+
+     sayHi(){
+      console.log(`姓名${this.name}学号${this.number}`)
+     }
+ }
+
+//老师子类
+  class teacher extends PeoPle(){
+     constructor(name,number){
+      super(name)
+      this.major=major
+     }
+
+     teach(){
+      console.log(`姓名${this.name}学号${this.major}`)
+     }
+ }
+
+
+
+ const xialuo =new Student('夏洛',1000)
+ console.log(xialuo.name)
+ console.log(xialuo.number)
+ xialuo.eat()
+ xialuo.sayHi()
+
+ const wanglaoshi =new teacher('夏洛',1000)
+ console.log(xialuo.wanglaoshi)
+ console.log(xialuo.wanglaoshi)
+ wanglaoshi.eat()
+ wanglaoshi.teach()
 ```
