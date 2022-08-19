@@ -249,8 +249,31 @@ try catch 相当于 promise catch
 * await相当于promise的then
 * try catch可以捕获异常，代替了promise的catch
 
+async用同步的代码写异步但是改变不了异步的本质
+
+```js
+  async function async1 () {
+  console.log('async1 start')//2
+  await async2()
+  console.log('async1 end') //5
+   // 关键在这一步，它相当于放在 callback 中，最后执行    await 之后相当于异步
+}
+
+async function async2 () {
+  console.log('async2') //3
+}
+
+console.log('script start') //1
+async1()
+console.log('script end') //4
 
 
+//script start   async1 start   async2   script end    async1 end
+```
+#### for in和for of的区别
+
+* for in常用于同步的遍历
+* for of常用于异步的遍历
 #### 3.7箭头函数和普通函数有什么区别
 
 箭头函数的特性：

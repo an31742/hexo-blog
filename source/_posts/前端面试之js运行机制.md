@@ -62,6 +62,10 @@ for (var i = 0; i < 4; i++) {
 
 # 宏任务、微任务
 
+
+微任务要优先红任务执行
+
+
 * 先看代码
 ```
 console.log('script start');
@@ -89,8 +93,11 @@ console.log('script end');
 * 鼠标点击会触发一个事件回调，需要执行一个宏任务，然后解析HTMl。
 * setTimeout的作用是等待给定的时间后为它的回调产生一个新的宏任务。这就是为什么打印‘setTimeout’在‘script end’之后。
 * 因为打印script end是第一个宏任务里面的事情，而‘setTimeout’是另一个独立的任务里面打印的。
+* setTimeout setInterval ajax Dom事件
 
 ### 微任务（Microtasks ）
+
+* promise async和await
 
 * 微任务通常来说就是需要在当前 task 执行结束后立即执行的任务，比如对一系列动作做出反馈，或者是需要异步的执行任务而又不需要分配一个新的 task，这样便可以减小一点性能的开销。
 * 只要执行栈中没有其他的js代码正在执行且每个宏任务执行完，微任务队列会立即执行。
