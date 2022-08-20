@@ -6,6 +6,22 @@ tags: 前端面试
 
 # 事件类
 
+## 事件绑定
+```js
+//通用的事件绑定函数
+function bindEvent(elem,type,fn{
+  elem.addEventListener(type,fn)
+})
+
+const btn1=document.getElementById('btn1')
+
+bindEvent(btn1,'click',evnet =>{
+  event.preventDefault() //阻止默认行为
+  alert('click')
+})
+
+```
+
 ## DOM事件的级别
 
 * DOM标准的定义标准
@@ -22,7 +38,8 @@ DOM3 dom.addEventListener('keyup',function(){},true)  丰富了事件类型
 ## DOM事件模型
 
 * 捕获：从上到下
-* 冒泡：从下到上
+* 冒泡：从下到上  基于dom树形结构，会顺着触发元素向上冒泡 例子：事件代理
+* 事件代理：代码简洁，减少浏览器的内存占用
 
 ## DOM事件流
 
