@@ -276,7 +276,15 @@ router对象的params.id {{$route.params | json}}
 * 而当用户操作视图，ViewModel也能监听到视图的变化，然后通知数据做改动，还是数据改动嘛；
 
 
+### Vue实现数据双向绑定的原理：Object.defineProperty()
+
+vue.js 则是采用数据劫持结合发布者-订阅者模式的方式，通过Object.defineProperty()来劫持各个属性的setter，getter，在数据变动时发布消息给订阅者，触发相应的监听回调
 
 
 
+a、Observer实现对MVVM自身model数据劫持，监听数据的属性变更，并在变动时进行notify
+b、Compile实现指令解析，初始化视图，并订阅数据变化，绑定好更新函数
+c、Watcher一方面接收Observer通过dep传递过来的数据变化，一方面通知Compile进行view update
+
+observer用来实现对每个vue中的data中定义的属性循环用Object.defineProperty()实现数据劫持，以便利用其中的setter和getter，然后通知订阅者，订阅者会触发它的update方法，对视图进行更新。
 
