@@ -106,14 +106,29 @@ let:在代码执行之前的扫描，同样也会对let变量进行“提升”�
 
 pending（执行中）、success（成功）、rejected（失败 、
 
-
-
-
 * pending 不会触发任何 then catch 回调
 * 状态变为 resolved 会触发后续的 then 回调
 * 状态变为 rejected 会触发后续的 catch 回调
 
-then和catch
+
+  
+
+用于解决地狱回调，将异步转化为同步
+
+```js
+`let p = new Promise((resolve,reject) => {
+    reject('error');
+});
+
+p.catch(result => {
+    console.log(result);
+})`
+
+```
+
+2 Promise有五个常用的方法：then()、catch()、all()、race()、finally。
+
+ then和catch
 - then正常返回resloved，里面报错返回rejected
 - catch正常返回resloved，里面报错返回rejected
 - ```js
@@ -171,22 +186,34 @@ Promise.resolve().then(() => { // 返回 rejected 状态的 promise
 
 //1 2
 ```
-  
 
-用于解决地狱回调，将异步转化为同步
-
-```js
-`let p = new Promise((resolve,reject) => {
-    reject('error');
-});
-
-p.catch(result => {
-    console.log(result);
-})`
+all() 方法可以完成并行任务， 它接收一个数组，数组的每一项都是一个promise对象。当数组中所有的promise的状态都达到resolved的时候，all方法的状态就会变成resolved，如果有一个状态变成了rejected，那么all方法的状态就会变成rejected
 
 ```
+ let promise1 = new Promise((resolve,reject)=>{ setTimeout(()=>{ resolve(1); },2000) }); 
+ let promise2 = new Promise((resolve,reject)=>{ setTimeout(()=>{ resolve(2); },1000) }); 
+ let promise3 = new Promise((resolve,reject)=>{ setTimeout(()=>{ resolve(3); },3000) });
+  Promise.all([promise1,promise2,promise3]).then(res=>{ console.log(res); //结果为：[1,2,3] })
+```
 
-#### 3.5什么是async和await
+调用all方法时的结果成功的时候是回调函数的参数也是一个数组，这个数组按顺序保存着每一个promise对象resolve执行时的值
+
+race()
+race方法和all一样，接受的参数是一个每项都是promise的数组，但是与all不同的是，当最先执行完的事件执行完之后，就直接返回该promise对象的值。如果第一个promise对象状态变成resolved，那自身的状态变成了resolved；反之第一个promise变成rejected，那自身状态就会变成rejected。
+
+```js
+let promise1 = new Promise((resolve,reject)=>{ setTimeout(()=>{ reject(1); },2000) }); 
+let promise2 = new Promise((resolve,reject)=>{ setTimeout(()=>{ resolve(2); },1000) }); 
+let promise3 = new Promise((resolve,reject)=>{ setTimeout(()=>{ resolve(3); },3000) }); 
+Promise.race([promise1,promise2,promise3]).then(res=>{ console.log(res); 
+//结果：2 },rej=>{ console.log(rej)}; )
+```
+那么race方法有什么实际作用呢？当要做一件事，超过多长时间就不做了，可以用这个方法来解决
+
+```
+Promise.race([promise1,timeOutPromise(5000)]).then(res=>{})
+```
+#### 什么是async和await
 
 async和await是将异步强行转换为同步处理。 
 
@@ -245,7 +272,7 @@ try catch 相当于 promise catch
 
 ```
 
-#### 3.6async和promise关系吗
+#### async和promise关系吗
 
 * 执行async，返回的是一个promise对象
 * await相当于promise的then
@@ -276,7 +303,7 @@ console.log('script end') //4
 
 * for in常用于同步的遍历
 * for of常用于异步的遍历
-#### 3.7箭头函数和普通函数有什么区别
+#### 箭头函数和普通函数有什么区别
 
 箭头函数的特性：
 
@@ -336,7 +363,7 @@ var faceTol=()=> {
 //报错不是一个函数
 ```
 
-#### 3.8什么是rest参数
+#### 什么是rest参数
 
 **rest 参数：剩余参数，以 … 修饰最后一个参数，把多余的参数都放到一个数组中。可以替代 arguments 的使用**
 
@@ -350,7 +377,7 @@ function fn(a, b, ...values) {
 console.log(fn(6, 1, 100, 9, 10));
 ```
 
-#### 3.9字符串的扩展
+#### 字符串的扩展
 
 1，模板字符串
 
@@ -431,7 +458,7 @@ console.log(arr); // ['a', 'b', 'c']
 // 上例中，如果length为2，则得到的数组为 ['a', 'b']
 ```
 
-### 3.11Set 的成员
+### Set 的成员
 
 - `size`：属性，获取 `set` 中成员的个数，相当于数组中的 `length`
 - `add(value)`：添加某个值，返回 Set 结构本身。
@@ -447,6 +474,11 @@ const s = new Set();
 // 使用forEach遍历前面的数组，然后将数组中的每个值都通过Set对象的add方法添加到Set对象中
 [2, 3, 5, 4, 5, 2, 2].forEach(x => s.add(x));
 // s = {2, 3, 5, 4}
+
+let arr = [1,1,2,2,3,3]
+let set = [...new Set(arr)]
+
+
 // 遍历Set对象，发现重复的值只有一份
 // for...in  循环中的 i 表示数组的下标，或对象的属性名
 // for...of  循环中的 i 表示数组的值，或对象的值
@@ -456,7 +488,7 @@ for (let i of s) {
 // 2 3 5 4
 ```
 
-### 3.12 类的声明
+###  类的声明
 ```
 function FN(argument) {
 }
@@ -592,13 +624,6 @@ s_1.prototype.constructor = s_1;
  wanglaoshi.teach()
 ```
 
-
-
-
-
-### 变量
-* let:块级变量，形成作用域，闭包。不允许在域内重新赋值。使用在for循环内的异步，闭包实现。
-* const：定义常量,初始化必须赋值，以后不允许改变。也是不允许重复声明。
 
 ### 解构赋值
 
@@ -852,38 +877,5 @@ setInterval(function () {  this.s2++;}, 1000); 尽管执行三次，但是window
 * 由于箭头函数没有自己的this，所以当然也就不能用call()、apply()、bind()这些方法去改变this的指向。
 * 箭头函数没有原型属性，所以就不能做构造函数。
 
-### 类
 
-```
-class Person {
-  constructor(name = 'aa', age = 0) {
-    this.name = name;
-    this.age = age;
-  }
-  showName() {
-    console.log(this.name);
-    return this.name;
-  }
-  showAge() {
-    return this.age;
-  }
-}
-var p1=new Person('aaa',10);
-var p2=new Person('bbb',20);
-console.log(p2.showName==p1.showName);
-console.log(p1.constructor==Person);
-
----------------------------------------------
-class Worker extends Person {
-  constructor(name, age, job = '扫地的') {
-    super(name, age);
-    this.job = job;
-  }
-  showJob() {
-    return this.job;
-  }
-}
-var w1 = new Worker('mmm', 56);
-w1.showName()
-```
 
