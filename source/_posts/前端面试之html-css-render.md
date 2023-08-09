@@ -3,176 +3,50 @@ title: 前端面试之html-css_render
 date: 2022-07-28 01:02:27
 tags: 前端面试
 ---
+### 浏览器渲染过程
 
-# 通信类
+* 1.HTML解析出DOM Tree
+* 2.CSS解析出Style Rules
+* 3.将二者关联生成Render Tree
+* 4.布局layout根据Render Tree计算每个节点的信息，就是计算出每个节点的信息；
+* 5.Painting 根据计算好的信息绘制整个页面
 
-### 什么是同源策略及限制
+### Render Tree
+* Render Tree的构建其实就是DOM Tree和CSSOM Attach的过程。【Attach：附加，关联】
 
+### 布局Layout
+
+* 创建渲染树后，下一步就是布局（Layout）,或者叫回流（reflow,relayout），这个过程就是通过渲染树中渲染对象的信息，计算出每一个渲染对象的位置和尺寸，将其安置在浏览器窗口的正确位置，而有些时候我们会在文档布局完成后对DOM进行修改，这时候可能需要重新进行布局，也可称其为回流，本质上还是一个布局的过程，每一个渲染对象都有一个布局或者回流方法，实现其布局或回流。
+* 对渲染树的布局可以分为全局和局部的，全局即对整个渲染树进行重新布局，如当我们改变了窗口尺寸或方向或者是修改了根元素的尺寸或者字体大小等；而局部布局可以是对渲染树的某部分或某一个渲染对象进行重新布局。
+
+### 绘制Painting
+* 在绘制阶段，系统会遍历呈现树，并调用呈现器的“paint”方法，将呈现器的内容显示在屏幕上。
+
+### 重绘Repaint
+* 屏幕的一部分要重画，比如某个CSS的背景色变了。但是元素的几何尺寸没有变。
+
+### 回流Reflow
+* 元件的几何尺寸变了，我们需要重新验证并计算Render Tree。是Render Tree的一部分或全部发生了变化。这就是Reflow，或是Layout。
+* Reflow的成本比Repaint的成本高得多的多。DOM Tree里的每个结点都会有reflow方法，一个结点的reflow很有可能导致子结点，甚至父点以及同级结点的reflow。在一些高性能的电脑上也许还没什么，但是如果reflow发生在手机上，那么这个过程是非常痛苦和耗电的。 所以，下面这些动作有很大可能会是成本比较高的。
+
+
+---------------------
+
+### 脚本处理
+* 浏览器解析文档，当遇到`<script>`标签的时候，会立即解析脚本，停止解析文档
+* 因为JS可能会改动DOM和CSS，所以继续解析会造成浪费。
+* 如果脚本是外部的，会等待脚本下载完毕，再继续解析文档。现在可以在script标签上增加属性 defer或者async。(就是一起解析了？)脚本解析会将脚本中改变DOM和CSS的地方分别解析出来，追加到DOM Tree和Style Rules上。
+* JS为什么放在下面？DOM树，CSSOM树已经完成了，即使有DOM改动，也不会在页面等待时间上有所显示；因为JS的异步的的修改都是单独拿出来进行渲染的；
+
+### CSS优先级
+* 优先级：浏览器默认设置<用户设置<外部样式<内联样式<HTML中的style样式；
+
+### 何时执行
 ```
-源：HTTP协议、IP、端口。
-限制:不是一个源的文档，没有权力操作另外一个源的文档。
-方面：
-1.无法操作cookie.localStorage和indexDB
-2.DOM无法获取
-3.AJAX不能发送
-```
-
-### 前后端是如何通信的
-
-* ajax:同源下的通信
-* websocket:不受同源策略的限制
-* CORS：支持同源，也支持跨域。
-
-### 如何创建ajax
-
-```
-【拿到xhr】
-var httpobj = null;
-try {
-  httpobj = new ActiveXObject("Msxml2.XMLHTTP");
-}
-// 
-catch (e) {
-  try {
-    httpobj = new ActiveXObject("Microsoft.XMLHTTP");
-  }
-  // 
-  catch (e1) {
-    httpobj = new XMLHttpRequest();
-  }
-}
-var xhr = httpobj;
-
-// 开启
-xhr.open("post", "xxx", true);
-// 设置请求头
-xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");
-
-// 拼接数据
-var content = '';
-for (var key in daya) {
-  content += key + '=' + daya[key] + '&';
-}
-content = content.slice(0, content.length - 1);
-
-// 发送
-xhr.send(content);
-
-// 响应：
-// xhr.onreadystatechange
-xhr.onload = function() { 
-  // xhr.status == 200||xhr.status == 304||xhr.status == 206
-  if (xhr.readyState == 4 && xhr.status == 200) {
-    JSON.parse(xhr.responseText)
-  }
-};
+ (1)window.onload方法是在网页中所有的元素(包括元素的所有关联文件)完全加载到浏览器后才执行的。
+ (2)$(document).ready() 方法可以在DOM载入就绪时,就调用执行绑定的函数。
 ```
 
-* axios请求的设置
-```
-【1】
-前端：
-axios默认的请求内容类型：Content-Type: application/json;charset=UTF-8
 
-后台：
-app.use(bodyParser.json());
 
-【2】
-前端：
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
-let param = new URLSearchParams();
-param.append('name', me.obj.name);
-param.append('ps', me.obj.ps);
-me.$ajax({data: param})
 
-后台：
-app.use(bodyParser.urlencoded({ extended: false }));
-```
-
-### 跨域
-
-* JSONP：非正式传输协议。
-* 发现凡是拥有”src”这个属性的标签都拥有跨域的能力，比如`<script>、<img>、<iframe>`;
-* 就是本地写好回调函数，动态生成一个script标签，写入src的路径把函数名传过去，说到底回来的脚本，里面执行的代码就是执行这个函数。相当于是异步加载JS，异步执行我们已经写好的回调函数。
-* ajax和jsonp其实本质上是不同的东西。ajax的核心是通过XmlHttpRequest获取非本页内容，而jsonp的核心则是动态添加script标签来调用服务器提供的js脚本。
-```
-// 得到航班信息查询结果后的回调函数
-var flightHandler = function(data){
-    alert('你查询的航班结果是：票价 ' + data.price + ' 元，' + '余票 ' + data.tickets + ' 张。');
-};
-
-// 提供jsonp服务的url地址（不管是什么类型的地址，最终生成的返回值都是一段javascript代码）
-var url = "http://flightQuery.com/jsonp/flightResult.aspx?code=CA1998&callback=flightHandler";
-
-// 创建script标签，设置其属性
-var script = document.createElement('script');
-script.setAttribute('src', url);
-
-// 把script标签加入head，此时调用开始
-document.getElementsByTagName('head')[0].appendChild(script);
-```
-
-* hash:就是www.baidu.com/#号后面的值，改变时不会刷新页面的。
-* (www.baidu.com/?search=10,改变search后面的值页面就会刷新。)
-* 实现：A页面里,通过iframe引入B页面。在A页面的JS拿到B的iframe的src,修改值。在B页面的JS内写onhashchange的响应函数，拿到A传的数据
-```
-【A页面】
-var iframe_b = document.getElementById('iframe_b');
-iframe_b.src = iframe_b.src + '#user=admin';
-
-【B页面】监听
-window.onhashchange = function () {
-    var data = window.location.hash;
-};
-```
-
-* postMessage:H5中东西
-```
-【A页面】
-window.postMessage(data,"http://B.html");
-
-【B页面】
-window.addEventListener("message",function(ev){
-  ev.origin // http://A.html
-  ev.source // A页面的window
-  ev.data. 
-},false);
-```
-
-* WebSocket: 我们使用Socket.io，它很好地封装了webSocket接口，提供了更简单、灵活的接口，也对不支持webSocket的浏览器提供了向下兼容。
-
-* CORS:通信标准。可理解为支持跨域通信的AJAX。浏览器在识别发送一个跨域请求时，会在头部加一个orgin，支持跨域通信。
-```
-res.writeHead(200, {
-    "Content-Type": "text/html; charset=UTF-8",
-    "Access-Control-Allow-Origin":'http://localhost',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type'
-});
-
-app.all('*', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
-    res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-    next();
-});
-```
-
-* 前端webpack/browserify设置服务代理
-
-### 敲入URL发生的事情
-* 1.用户输入URL地址
-* 2.浏览器解析URL解析出主机名
-* 3.浏览器将主机名转换成服务器ip地址（浏览器先查找本地DNS缓存列表 没有的话 再向浏览器默认的DNS服务器发送查询请求 同时缓存）
-* 4.浏览器将端口号从URL中解析出来
-* 5.浏览器建立一条与目标Web服务器的TCP连接（三次握手）
-* 6.浏览器向服务器发送一条HTTP请求报文
-* 7.服务器向浏览器返回一条HTTP响应报文
-* 8.关闭连接 浏览器解析文档
-* 9.如果文档中有资源 重复6 7 8 动作 直至资源全部加载完毕
-
-### TCP连接三次握手
-
-* A:我说的话，你听见了么？
-* B：听见了，我说的你听见了么？（回复A的问题，提出自己的问题）；
-* A：听见了，我们开始说话吧。
