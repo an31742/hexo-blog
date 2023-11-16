@@ -1,34 +1,39 @@
-[{
-    "name": "colorful",
+[
+  {
+    "name": "风景",
     "cover": "/images/theme/post-image.jpg",
     "description": "君未看花时，花与君同寂；君来看花日，花色一时明。",
     "photos": [
-      "/images/theme/post-image.jpg",
-      "/images/theme/post-image.jpg",
-      "/images/theme/post-image.jpg",
-      "/images/theme/post-image.jpg",
-      "/images/theme/post-image.jpg"
+      "/images/view/1491699946805_.pic.jpg",
+      "/images/view/1501699946806_.pic_thumb.jpg",
+      "/images/view/1511699946807_.pic_thumb.jpg",
+      "/images/view/1521699946809_.pic.jpg",
+      "/images/view/1531699946812_.pic_thumb.jpg",
+      "/source/images/view/1541699946815_.pic_thumb.jpg",
+      "/source/images/view/1561699946819_.pic_thumb.jpg",
+      "/source/images/view/1571699946821_.pic.jpg",
+      "/source/images/view/1591699946823_.pic_thumb.jpg",
+      "/source/images/view/1601699946826_.pic.jpg",
+      "/source/images/view/1621699946830_.pic_thumb.jpg",
+      "/source/images/view/1631699946831_.pic.jpg",
+      "/source/images/view/1651699946833_.pic_thumb.jpg",
+      "/source/images/view/1641699946832_.pic_thumb.jpg",
+      "/source/images/view/1661699946834_.pic.jpg",
+      "/source/images/view/1671699946836_.pic_thumb.jpg"
     ]
-  }, {
-    "name": "记事",
+  },
+  {
+    "name": "人物",
     "cover": "/images/theme/post-image.jpg",
-    "description": "翻开随身携带的记事本，写着许多事都是关于你。",
+    "description": "生命的绽放",
     "photos": [
-      "/images/theme/post-image.jpg",
-      "/images/theme/post-image.jpg",
-      "/images/theme/post-image.jpg",
-      "/images/theme/post-image.jpg",
-      "/images/theme/post-image.jpg"
+      "/images/people/1481699946804_.pic_thumb.jpg"
     ]
-  }, {
-    "name": "深圳日记",
+  },
+  {
+    "name": "旅途",
     "cover": "/images/theme/post-image.jpg",
     "description": "斑马斑马，你不要睡着啦，我只是个匆忙的旅人啊。",
-    "photos": [
-      "/images/theme/post-image.jpg",
-      "/images/theme/post-image.jpg",
-      "/images/theme/post-image.jpg",
-      "/images/theme/post-image.jpg",
-      "/images/theme/post-image.jpg"
-    ]
-  }]
+    "photos": []
+  }
+]
